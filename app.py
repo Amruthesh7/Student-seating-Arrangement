@@ -9,7 +9,14 @@ import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key-here-change-in-production')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///seating_arrangement.db')
+# Handle database URL for different environments
+database_url = os.environ.get('DATABASE_URL')
+if database_url:
+    # Production environment (Railway, Render, Heroku)
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+else:
+    # Development environment
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///seating_arrangement.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -155,6 +162,22 @@ def generate_seating_arrangement(exam_date):
         return False, f"Error saving arrangements: {str(e)}"
 
 # Routes
+@app.route('/health')
+def health_check():
+    """Health check endpoint for deployment verification"""
+    try:
+        # Test database connection
+        db.session.execute('SELECT 1')
+        db_status = 'connected'
+    except Exception as e:
+        db_status = f'error: {str(e)}'
+    
+    return jsonify({
+        'status': 'healthy',
+        'message': 'Student Seating Arrangement Portal is running',
+        'database': db_status
+    })
+
 @app.route('/')
 def index():
     total_students = Student.query.count()
