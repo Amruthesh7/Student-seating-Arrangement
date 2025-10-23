@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Generate Seating Arrangement - Student Seating Arrangement Portal{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+                <i class="fas fa-magic me-2"></i>
+                Generate Seating Arrangement
+            </h1>
+            <a href="{{ url_for('arrangements') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Arrangements
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Arrangement Settings</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.exam_date.label(class="form-label") }}
+                        {{ form.exam_date(class="form-control", type="date") }}
+                        {% if form.exam_date.errors %}
+                            <div class="text-danger">
+                                {% for error in form.exam_date.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Algorithm Features:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>Students with the same subject code will be placed on different benches</li>
+                            <li>Maximum 2 students per bench</li>
+                            <li>Automatic room allocation based on capacity</li>
+                            <li>Fair distribution across available rooms</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('arrangements') }}" class="btn btn-outline-secondary me-md-2">Cancel</a>
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-cogs me-2"></i>
+                    System Requirements
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Before generating arrangements, ensure you have:</h6>
+                        <ul>
+                            <li>Added students with their subject codes</li>
+                            <li>Added rooms with proper capacity and bench count</li>
+                            <li>Sufficient room capacity for all students</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Quick Actions:</h6>
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('students') }}" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-users me-2"></i>Manage Students
+                            </a>
+                            <a href="{{ url_for('rooms') }}" class="btn btn-outline-success btn-sm">
+                                <i class="fas fa-door-open me-2"></i>Manage Rooms
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
